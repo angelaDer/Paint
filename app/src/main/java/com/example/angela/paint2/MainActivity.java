@@ -13,21 +13,42 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.SeekBar;
+import android.widget.SeekBar.*;
+import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements OnSeekBarChangeListener {
 
     private PaintView paintView;
+    private SeekBar mSizeBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         paintView = (PaintView) findViewById(R.id.paintView);
+        mSizeBar = (SeekBar) findViewById(R.id.BrushSize);
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
         paintView.init(metrics);
+        mSizeBar.setProgress(20);
+        mSizeBar.setOnSeekBarChangeListener(this);
 
             }
+
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress,
+                                  boolean fromUser) {
+        Toast.makeText(getApplicationContext(),"Size set to: "+progress, Toast.LENGTH_SHORT).show();
+    }
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+
+    }
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+        paintView.setBrushSize(seekBar.getProgress());
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -48,8 +69,6 @@ public class MainActivity extends AppCompatActivity {
             case R.id.clear:
                 paintView.clear();
                 return true;
-            case R.id.BrushSize:
-                paintView.brushSize();
             case R.id.color:
                 //paintView.color();
 
@@ -62,15 +81,15 @@ public class MainActivity extends AppCompatActivity {
                         switch (item) {
                             case 0:
                                 // PaintView.mPaint.setColor(Color.RED);
-                                PaintView.mDEFAULT_COLOR = Color.RED;
+                                paintView.setCurrentColor(Color.RED);
                                 break;
                             case 1:
                                // PaintView.mPaint.setColor(Color.GREEN);
-                                PaintView.mDEFAULT_COLOR = Color.GREEN;
+                                paintView.setCurrentColor(Color.GREEN);
                                 break;
                             case 2:
                                // PaintView.mPaint.setColor(Color.BLUE);
-                                PaintView.mDEFAULT_COLOR = Color.BLUE;
+                                paintView.setCurrentColor(Color.BLUE);
                                 break;
                         }
                     }

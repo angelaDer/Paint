@@ -1,6 +1,8 @@
 package com.example.angela.paint2;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
@@ -32,6 +34,14 @@ public class PaintView extends View {
     private Bitmap mBitmap;
     private Canvas mCanvas;
     private Paint mBitmapPaint = new Paint(Paint.DITHER_FLAG);
+
+    public void setCurrentColor(int color) {
+        currentColor = color;
+    }
+
+    public void setBrushSize(int size) {
+        brushSize = size;
+    }
 
     public PaintView(Context context) {
         this(context, null);
@@ -77,37 +87,7 @@ public class PaintView extends View {
         invalidate();
     }
 
-    public void brushSize(){
-        // set brush size
-    }
 
-    /*public void color(){
-
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(); // Why? :(
-        alertDialogBuilder.setTitle("Choose a color");
-        final CharSequence[] items = { "Red", "Green", "Blue" };
-
-        alertDialogBuilder.setItems(items, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int item) {
-                switch (item) {
-                    case 0:
-                        mPaint.setColor(Color.RED);
-                        break;
-                    case 1:
-                        mPaint.setColor(Color.GREEN);
-                        break;
-                    case 2:
-                        mPaint.setColor(Color.BLUE);
-                        break;
-                }
-            }
-        });
-
-        AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show(); */
-        // not working :(
-
-   // }
 
     @Override
     protected void onDraw(Canvas canvas) {
