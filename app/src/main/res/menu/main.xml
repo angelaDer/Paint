@@ -22,5 +22,10 @@
         app:showAsAction="never"
         android:title="Choose color" />
 
+    <item
+        android:id="@+id/save"
+        app:showAsAction="never"
+        android:title="Save" />
+
 
 </menu>

@@ -1,20 +1,21 @@
 package com.example.angela.paint2;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputType;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.SeekBar.*;
-import android.widget.Toast;
+
 
 public class MainActivity extends AppCompatActivity implements OnSeekBarChangeListener {
 
@@ -38,7 +39,6 @@ public class MainActivity extends AppCompatActivity implements OnSeekBarChangeLi
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress,
                                   boolean fromUser) {
-        Toast.makeText(getApplicationContext(),"Size set to: "+progress, Toast.LENGTH_SHORT).show();
     }
     @Override
     public void onStartTrackingTouch(SeekBar seekBar) {
@@ -60,6 +60,30 @@ public class MainActivity extends AppCompatActivity implements OnSeekBarChangeLi
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
+            case R.id.save:
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("Enter a name");
+                final EditText input = new EditText(this);
+                input.setInputType(InputType.TYPE_CLASS_TEXT );
+                builder.setView(input);
+
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String name = input.getText().toString();
+                        paintView.saveImage(name);
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+                builder.show();
+
             case R.id.normal:
                 paintView.normal();
                 return true;
@@ -70,36 +94,97 @@ public class MainActivity extends AppCompatActivity implements OnSeekBarChangeLi
                 paintView.clear();
                 return true;
             case R.id.color:
-                //paintView.color();
-
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this); // Why? :(
-                alertDialogBuilder.setTitle("Choose a color");
-                final CharSequence[] items = { "Red", "Green", "Blue" };
-
-                alertDialogBuilder.setItems(items, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int item) { // not working!
-                        switch (item) {
-                            case 0:
-                                // PaintView.mPaint.setColor(Color.RED);
-                                paintView.setCurrentColor(Color.RED);
-                                break;
-                            case 1:
-                               // PaintView.mPaint.setColor(Color.GREEN);
-                                paintView.setCurrentColor(Color.GREEN);
-                                break;
-                            case 2:
-                               // PaintView.mPaint.setColor(Color.BLUE);
-                                paintView.setCurrentColor(Color.BLUE);
-                                break;
-                        }
-                    }
-                });
-
-                AlertDialog alertDialog = alertDialogBuilder.create();
-                alertDialog.show();
+                pickColor();
         }
 
         return super.onOptionsItemSelected(item);
 
     }
+    public void pickColor() {
+        final AlertDialog.Builder colorDialog = new AlertDialog.Builder(this);
+
+        final LayoutInflater inflater = (LayoutInflater) this.getSystemService(LAYOUT_INFLATER_SERVICE);
+        final View view = inflater.inflate(R.layout.colors_rgb, (ViewGroup) findViewById(R.id.color_layout));
+        colorDialog.setTitle("Choose RGB color");
+        colorDialog.setView(view);
+
+
+        //Log.d("lol",String.valueOf(colorCheck.getWidth()));
+        final SeekBar seekR = (SeekBar) view.findViewById(R.id.r_color);
+        seekR.setProgress(50);
+        seekR.setMax(255);
+        seekR.setKeyProgressIncrement(1);
+        final SeekBar seekG = (SeekBar) view.findViewById(R.id.g_color);
+        final SeekBar seekB = (SeekBar) view.findViewById(R.id.b_color);
+        //final LinearLayout colorCheck = (LinearLayout) findViewById(R.id.color_check);
+
+        seekR.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                paintView.setRGB(seekR.getProgress(),seekG.getProgress(),seekB.getProgress());
+        }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        seekG.setMax(255);
+        seekG.setKeyProgressIncrement(1);
+        seekG.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                paintView.setRGB(seekR.getProgress(),seekG.getProgress(),seekB.getProgress());
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+
+        seekB.setMax(255);
+        seekB.setKeyProgressIncrement(1);
+        seekB.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                paintView.setRGB(seekR.getProgress(),seekG.getProgress(),seekB.getProgress());
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        colorDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+
+
+        colorDialog.show();
+
+    }
+
 }

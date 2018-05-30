@@ -8,13 +8,31 @@ public class FingerPath {
     public boolean blur;
     public int brushSize;
     public Path path; // drawn path
+    private int mR;
+    private int mG;
+    private int mB;
 
     // Type of brush
-    public FingerPath(int color, boolean blur, int brushSize, Path path) {
-        this.color = color;
+    public FingerPath(int R, int G, int B, boolean blur, int brushSize, Path path) {
+        this.mR = R;
+        this.mG = G;
+        this.mB = B;
         this.blur = blur;
         this.brushSize= brushSize;
         this.path = path;
+    }
+
+
+    public int getmR() {
+        return mR;
+    }
+
+    public int getmG() {
+        return mG;
+    }
+
+    public int getmB() {
+        return mB;
     }
 
     public int getColor() {

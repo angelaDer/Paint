@@ -10,10 +10,15 @@ import android.graphics.Color;
 import android.graphics.MaskFilter;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.os.Environment;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 
 public class PaintView extends View {
@@ -26,7 +31,6 @@ public class PaintView extends View {
     private Path mPath;
     public static Paint mPaint;
     private ArrayList<FingerPath> paths = new ArrayList<>();
-    private int currentColor;
     private int backgroundColor = DEFAULT_BG_COLOR;
     private int brushSize;
     private boolean blur;
@@ -34,9 +38,15 @@ public class PaintView extends View {
     private Bitmap mBitmap;
     private Canvas mCanvas;
     private Paint mBitmapPaint = new Paint(Paint.DITHER_FLAG);
+    private int mR;
+    private int mG;
+    private int mB;
 
-    public void setCurrentColor(int color) {
-        currentColor = color;
+
+    public void setRGB(int r, int g, int b) {
+        mR = r;
+        mG = g;
+        mB = b;
     }
 
     public void setBrushSize(int size) {
@@ -68,7 +78,9 @@ public class PaintView extends View {
 
         mBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         mCanvas = new Canvas(mBitmap);
-        currentColor = mDEFAULT_COLOR;
+        mR = 255;
+        mG = 0;
+        mB = 0;
         brushSize = BRUSH_SIZE;
     }
 
@@ -87,6 +99,28 @@ public class PaintView extends View {
         invalidate();
     }
 
+    public void saveImage(String name) {
+
+        File direct = new File(Environment.getExternalStorageDirectory() + "/ImageApp");
+
+        if (!direct.exists()) {
+            File wallpaperDirectory = new File("/sdcard/ImageApp/");
+            wallpaperDirectory.mkdirs();
+        }
+
+        File file = new File(new File("/sdcard/ImageApp/"), name+".png");
+        if (file.exists()) {
+            file.delete();
+        }
+        try {
+            FileOutputStream out = new FileOutputStream(file);
+            mBitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+            out.flush();
+            out.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 
     @Override
@@ -95,7 +129,7 @@ public class PaintView extends View {
         mCanvas.drawColor(backgroundColor);
 
         for (FingerPath fp : paths) {
-            mPaint.setColor(fp.color);
+            mPaint.setARGB(255,fp.getmR(),fp.getmG(),fp.getmB());
             mPaint.setStrokeWidth(fp.brushSize);
             mPaint.setMaskFilter(null);
 
@@ -112,7 +146,7 @@ public class PaintView extends View {
 
     private void touchStart(float x, float y) {
         mPath = new Path();
-        FingerPath fp = new FingerPath(currentColor, blur, brushSize, mPath);
+        FingerPath fp = new FingerPath(mR,mG,mB, blur, brushSize, mPath);
         paths.add(fp);
 
         mPath.reset();
@@ -158,5 +192,7 @@ public class PaintView extends View {
 
         return true;
     }
+
+
 
 }
